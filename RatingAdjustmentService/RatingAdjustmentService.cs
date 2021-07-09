@@ -7,7 +7,7 @@ namespace RatingAdjustment.Services
      */
     public class RatingAdjustmentService
     {
-        const double MAX_STARS = 5.0;  // Likert scale
+        const double MAX_STARS = 5.0;  // Liker scale
         const double Z = 1.96; // 95% confidence interval
 
         double _q;
@@ -47,7 +47,8 @@ namespace RatingAdjustment.Services
             SetPercentPositive(stars);
             SetQ(number_of_ratings);
             double LB = ((_percent_positive + ((Z * Z) / (2 * number_of_ratings)) - _q) / (1 + ((Z * Z) / number_of_ratings))) * (100 / 200);
-            
+            //return should be between 0 and 5
+            //input: 0 to 5 ---> convert to percentage [0,1] --> adjust it -- > convert it back to 0 to 5
             if (LB < MAX_STARS)
             {
                 return LB;
