@@ -22,7 +22,7 @@ namespace RatingAdjustment.Services
         void SetPercentPositive(double stars)
         {
             // TODO: Implement this!
-            _percent_positive = (stars * 20) / 100;
+            _percent_positive = (stars * 20.0) / 100.0;
         }
 
         /**
@@ -33,7 +33,7 @@ namespace RatingAdjustment.Services
             // TODO: Implement this!
             double n = number_of_ratings;
             double p = _percent_positive;
-            _q = Z * Math.Sqrt(((p * (1 - p)) + ((Z * Z) / (4 * n))) / n);
+            _q = Z * Math.Sqrt(((p * (1.0 - p)) + ((Z * Z) / (4.0 * n))) / n);
         }
 
         /** Adjusted lower bound
@@ -44,7 +44,7 @@ namespace RatingAdjustment.Services
          */
         public double Adjust(double stars, double number_of_ratings) {
             // TODO: Implement this!
-            SetPercentPositive(stars);
+            /*SetPercentPositive(stars);
             SetQ(number_of_ratings);
             double LB = ((_percent_positive + ((Z * Z) / (2 * number_of_ratings)) - _q) / (1 + ((Z * Z) / number_of_ratings))) * (100 / 200);
             //return should be between 0 and 5
@@ -56,8 +56,28 @@ namespace RatingAdjustment.Services
             else
             {
                 return stars;
+            } */
+
+            if (stars <= MAX_STARS)
+            {
+                SetPercentPositive(stars);
+                SetQ(number_of_ratings);
+                double n = number_of_ratings;
+                double p = _percent_positive;
+                double q = _q;
+                double lbound = ((p + ((Z * Z) / (2.0 * n)) - q) / (1.0 + ((Z * Z) / n)));
+                double lower_bound = (lbound / 20.0) * 100.0;
+                if (lower_bound <= MAX_STARS)
+                {
+                    return lower_bound;
+                }
+                else
+                {
+                    return stars;
+                }
             }
-            
+            return 0.0; //Returns 0.0 if the stars are greater than 5.0
+
         }
     }
 }
